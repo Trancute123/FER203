@@ -1,0 +1,4 @@
+npx create-react-app ex1
+cd ex1
+npm install react-bootstrap bootstrap
+Trong file src/index.js hoặc src/App.js thêm dòng:import 'bootstrap/dist/css/bootstrap.min.css';
