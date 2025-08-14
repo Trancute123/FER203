@@ -7,6 +7,7 @@ import RecipeModal from "./components/RecipeModal";
 import HeroSection from "./components/HeroSection";
 import HeroCarousel from "./components/HeroCarousel";
 import AboutPage from "./components/AboutPage";
+import RequestFormModal from "./components/RequestFormModal"; // import thêm
 import recipes from "./data/recipes";
 
 export default function App() {
@@ -15,12 +16,13 @@ export default function App() {
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [pageSize, setPageSize] = useState(6);
+  const [showRequestModal, setShowRequestModal] = useState(false); // quản lý modal request
 
-  // ✅ Đổi màu nền toàn trang
+  // Đổi màu nền toàn trang
   useEffect(() => {
-    document.body.style.backgroundColor = "#e6f4e6"; // xanh lá nhạt
+    document.body.style.backgroundColor = "#e6f4e6";
     return () => {
-      document.body.style.backgroundColor = null; // reset khi unmount
+      document.body.style.backgroundColor = null;
     };
   }, []);
 
@@ -41,7 +43,12 @@ export default function App() {
 
   return (
     <Router>
-      <AppNavbar favCount={favorites.length} cartCount={cartCount} />
+      {/* Truyền hàm mở modal xuống AppNavbar */}
+      <AppNavbar
+        favCount={favorites.length}
+        cartCount={cartCount}
+        onRecipesClick={() => setShowRequestModal(true)}
+      />
 
       <Routes>
         <Route
@@ -77,11 +84,18 @@ export default function App() {
         />
       </Routes>
 
+      {/* Modal xem công thức */}
       <RecipeModal
         show={modalOpen}
         recipe={selectedRecipe}
         onAddToCart={handleAddToCart}
         onHide={() => setModalOpen(false)}
+      />
+
+      {/* Modal Request Form */}
+      <RequestFormModal
+        show={showRequestModal}
+        onHide={() => setShowRequestModal(false)}
       />
     </Router>
   );

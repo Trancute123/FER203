@@ -1,18 +1,15 @@
 import React from "react";
-import { Row, Col, Form } from "react-bootstrap";
+import { Row, Col, Form } from "react-bootstrap"; // Form nhập liệu Bootstrap
 
 export default function Filters({
-  q,
-  setQ,
-  maxPrep,
-  setMaxPrep,
-  maxCook,
-  setMaxCook,
-  pageSize,
-  setPageSize
+  q, setQ,              // Từ khóa tìm kiếm và hàm cập nhật
+  maxPrep, setMaxPrep,  // Thời gian chuẩn bị tối đa
+  maxCook, setMaxCook,  // Thời gian nấu tối đa
+  pageSize, setPageSize // Số món/trang và hàm cập nhật
 }) {
   return (
     <Row className="mb-4 g-2">
+      {/* Lọc theo thời gian chuẩn bị */}
       <Col xs={12} md={2}>
         <Form.Select
           value={maxPrep}
@@ -26,6 +23,7 @@ export default function Filters({
         </Form.Select>
       </Col>
 
+      {/* Lọc theo thời gian nấu */}
       <Col xs={12} md={2}>
         <Form.Select
           value={maxCook}
@@ -39,6 +37,7 @@ export default function Filters({
         </Form.Select>
       </Col>
 
+      {/* Ô tìm kiếm theo tên hoặc nguyên liệu */}
       <Col xs={12} md={4}>
         <Form.Control
           type="text"
@@ -48,6 +47,7 @@ export default function Filters({
         />
       </Col>
 
+      {/* Chọn số món hiển thị mỗi trang */}
       <Col xs={12} md={2}>
         <Form.Select
           value={pageSize}

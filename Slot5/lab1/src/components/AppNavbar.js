@@ -3,7 +3,7 @@ import { Navbar, Container, Nav, Badge, Button } from "react-bootstrap";
 import { Link, NavLink } from "react-router-dom";
 import { FaHeart, FaShoppingCart, FaLeaf } from "react-icons/fa";
 
-export default function AppNavbar({ favCount, cartCount }) {
+export default function AppNavbar({ favCount, cartCount, onRecipesClick }) {
   return (
     <Navbar bg="white" expand="lg" className="shadow-sm py-3">
       <Container>
@@ -27,9 +27,8 @@ export default function AppNavbar({ favCount, cartCount }) {
             <Nav.Link as={NavLink} to="/about">
               About
             </Nav.Link>
-            <Nav.Link as={NavLink} to="/recipes">
-              Recipes
-            </Nav.Link>
+            {/* Recipes: mở modal */}
+            <Nav.Link onClick={onRecipesClick}>Recipes</Nav.Link>
           </Nav>
 
           {/* Favorites */}
@@ -49,7 +48,7 @@ export default function AppNavbar({ favCount, cartCount }) {
             </Nav.Link>
 
             {/* Cart */}
-            <Nav.Link as={Link} to="/cart" className="position-relative ms-3">
+            <Nav.Link className="position-relative ms-3">
               <FaShoppingCart size={20} className="text-secondary me-1" />
               Cart
               {cartCount > 0 && (
@@ -66,10 +65,9 @@ export default function AppNavbar({ favCount, cartCount }) {
 
           {/* Browse Recipes Button */}
           <Button
-            as={Link}
-            to="/recipes"
             variant="success"
             className="px-4 rounded-pill"
+            onClick={onRecipesClick}
           >
             Browse recipes
           </Button>
