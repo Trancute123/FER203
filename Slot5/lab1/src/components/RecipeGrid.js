@@ -23,6 +23,8 @@ export default function RecipeGrid({
   const [maxCook, setMaxCook] = useState(0);
   // State lưu số trang hiện tại
   const [currentPage, setCurrentPage] = useState(1);
+  // 🆕 State lưu tiêu chí sắp xếp
+  const [sortBy, setSortBy] = useState("");
 
   // ========== Lọc dữ liệu ==========
   // useMemo: chỉ tính lại khi items, q, maxPrep, maxCook thay đổi (tối ưu hiệu năng)
@@ -43,11 +45,39 @@ export default function RecipeGrid({
     });
   }, [items, q, maxPrep, maxCook]);
 
+  // ========== Sắp xếp dữ liệu ==========
+  const sorted = useMemo(() => {
+    let sortedData = [...filtered];
+    switch (sortBy) {
+      case "name-asc":
+        sortedData.sort((a, b) => a.title.localeCompare(b.title));
+        break;
+      case "name-desc":
+        sortedData.sort((a, b) => b.title.localeCompare(a.title));
+        break;
+      case "prep-asc":
+        sortedData.sort((a, b) => a.prep - b.prep);
+        break;
+      case "prep-desc":
+        sortedData.sort((a, b) => b.prep - a.prep);
+        break;
+      case "cook-asc":
+        sortedData.sort((a, b) => a.cook - b.cook);
+        break;
+      case "cook-desc":
+        sortedData.sort((a, b) => b.cook - a.cook);
+        break;
+      default:
+        break;
+    }
+    return sortedData;
+  }, [filtered, sortBy]);
+
   // ========== Tính tổng số trang ==========
-  const totalPages = Math.ceil(filtered.length / pageSize);
+  const totalPages = Math.ceil(sorted.length / pageSize);
 
   // ========== Cắt dữ liệu theo trang ==========
-  const paginated = filtered.slice(
+  const paginated = sorted.slice(
     (currentPage - 1) * pageSize, // vị trí bắt đầu
     currentPage * pageSize        // vị trí kết thúc
   );
@@ -67,13 +97,14 @@ export default function RecipeGrid({
 
   return (
     <>
-      {/* Bộ lọc + thanh tìm kiếm */}
+      {/* Bộ lọc + thanh tìm kiếm + sort */}
       <Filters
         q={q} setQ={setQ}                 // Từ khóa và hàm cập nhật
         maxPrep={maxPrep} setMaxPrep={setMaxPrep} // Thời gian chuẩn bị tối đa
         maxCook={maxCook} setMaxCook={setMaxCook} // Thời gian nấu tối đa
         pageSize={pageSize}               // Số món/trang hiện tại
         setPageSize={handlePageSizeChange} // Hàm đổi số món/trang
+        sortBy={sortBy} setSortBy={setSortBy} // 🆕 Thêm sắp xếp
       />
 
       {/* Hiển thị danh sách món ăn dạng lưới */}

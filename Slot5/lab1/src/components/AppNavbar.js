@@ -28,7 +28,7 @@ export default function AppNavbar({ favCount, cartCount, onRecipesClick }) {
               About
             </Nav.Link>
             {/* Recipes: mở modal */}
-            <Nav.Link onClick={onRecipesClick}>Recipes</Nav.Link>
+            <Nav.Link onClick={onRecipesClick}>Recipe </Nav.Link>
           </Nav>
 
           {/* Favorites */}

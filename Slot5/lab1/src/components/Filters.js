@@ -1,11 +1,12 @@
 import React from "react";
-import { Row, Col, Form } from "react-bootstrap"; // Form nhập liệu Bootstrap
+import { Row, Col, Form } from "react-bootstrap";
 
 export default function Filters({
-  q, setQ,              // Từ khóa tìm kiếm và hàm cập nhật
-  maxPrep, setMaxPrep,  // Thời gian chuẩn bị tối đa
-  maxCook, setMaxCook,  // Thời gian nấu tối đa
-  pageSize, setPageSize // Số món/trang và hàm cập nhật
+  q, setQ,              
+  maxPrep, setMaxPrep,  
+  maxCook, setMaxCook,  
+  pageSize, setPageSize,
+  sortBy, setSortBy     // 🆕 Thêm props sắp xếp
 }) {
   return (
     <Row className="mb-4 g-2">
@@ -37,8 +38,8 @@ export default function Filters({
         </Form.Select>
       </Col>
 
-      {/* Ô tìm kiếm theo tên hoặc nguyên liệu */}
-      <Col xs={12} md={4}>
+      {/* Ô tìm kiếm */}
+      <Col xs={12} md={3}>
         <Form.Control
           type="text"
           placeholder="Search by name or ingredient..."
@@ -47,7 +48,23 @@ export default function Filters({
         />
       </Col>
 
-      {/* Chọn số món hiển thị mỗi trang */}
+      {/* Sort by */}
+      <Col xs={12} md={3}>
+        <Form.Select
+          value={sortBy}
+          onChange={(e) => setSortBy(e.target.value)}
+        >
+          <option value="">Sort by...</option>
+          <option value="name-asc">Name A → Z</option>
+          <option value="name-desc">Name Z → A</option>
+          <option value="prep-asc">Prep Time ↑</option>
+          <option value="prep-desc">Prep Time ↓</option>
+          <option value="cook-asc">Cook Time ↑</option>
+          <option value="cook-desc">Cook Time ↓</option>
+        </Form.Select>
+      </Col>
+
+      {/* Chọn số món mỗi trang */}
       <Col xs={12} md={2}>
         <Form.Select
           value={pageSize}
