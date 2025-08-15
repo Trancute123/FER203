@@ -1,0 +1,8 @@
+/* nền tổng */
+.app-dark {
+  background-color: #020B1A;
+  min-height: 100vh;
+  color: #e9ecef;
+  padding-top: 64px; /* chừa chỗ cho navbar fixed */
+}
+
