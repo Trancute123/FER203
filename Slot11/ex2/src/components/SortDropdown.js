@@ -20,7 +20,6 @@ function SortDropdown({ sortBy, setSortBy }) {
         </Dropdown.Item>
       </Dropdown.Menu>
 
-      {/* ✅ CSS lồng trực tiếp */}
       <style>{`
         .sort-btn {
           background-color: #4da6ff !important; /* xanh giống Search */

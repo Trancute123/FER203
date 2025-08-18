@@ -7,9 +7,8 @@ function Hero() {
       style={{
         background: "linear-gradient(120deg, #d6eaff, #f0f8ff)", // ✅ xanh pastel nhạt
         color: "#003366",
-        padding: "30px 0",          // ✅ nhỏ hơn
+        padding: "30px 0", // ✅ nhỏ hơn
         textAlign: "center",
-
       }}
     >
       <Container>
@@ -31,7 +30,9 @@ function Hero() {
             marginTop: "5px",
           }}
         >
-          Quản lý danh sách sinh viên một cách đơn giản với React Hooks
+          Manage your student list effortlessly with React Hooks, providing a
+          clean, intuitive interface and modern tools to keep everything
+          organized and easy to follow.
         </p>
       </Container>
     </div>

@@ -1,29 +1,37 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { students } from "../data/students";
 import Filters from "../components/Filters";
 import SortDropdown from "../components/SortDropdown";
 import StudentGrid from "../components/StudentGrid";
 import StudentDetailModal from "../components/StudentDetailModal";
 
-function StudentsPage() {
-  const [search, setSearch] = useState("");
+function StudentsPage({ searchQuery = "" }) {   // ✅ nhận searchQuery từ App
+  const [search, setSearch] = useState(searchQuery);
   const [ageFilter, setAgeFilter] = useState("All Ages");
   const [hasAvatar, setHasAvatar] = useState(false);
-  const [sortBy, setSortBy] = useState(""); // ✅ sort
+  const [sortBy, setSortBy] = useState("");
 
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
+  // ✅ mỗi khi navbar nhập Quick Search → cập nhật vào state search
+  useEffect(() => {
+    setSearch(searchQuery);
+  }, [searchQuery]);
 
   // ✅ Filter + Sort
   const filteredStudents = useMemo(() => {
     let result = [...students];
 
-    // search theo name/email
+    // search tất cả (name, email, id, age) ❌ không search avatar
     if (search) {
+      const q = search.toLowerCase().trim();
       result = result.filter(
         (s) =>
-          s.name.toLowerCase().includes(search.toLowerCase()) ||
-          s.email.toLowerCase().includes(search.toLowerCase())
+          s.name.toLowerCase().includes(q) ||
+          s.email.toLowerCase().includes(q) ||
+          String(s.id).includes(q) ||
+          String(s.age).includes(q)
       );
     }
 

@@ -21,7 +21,7 @@ function ProfileForm({ onSubmit }) {
     e.preventDefault();
     setValidated(true); // bật check lỗi
     if (isFormValid) {
-      setShowToast(true); // ✅ hiện Toast khi hợp lệ
+      setShowToast(true); //  hiện Toast khi hợp lệ
       setShowModal(true);
       onSubmit({ name, email, age });
     }
@@ -75,9 +75,9 @@ function ProfileForm({ onSubmit }) {
           </Form.Control.Feedback>
         </Form.Group>
 
-        {/* ✅ Không disable nút nữa */}
         <Button
           type="submit"
+          disabled={!isFormValid} //  thêm dòng này
           className="w-100"
           style={{
             background: "linear-gradient(to right, #667eea, #764ba2)",
