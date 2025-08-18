@@ -1,0 +1,90 @@
+/* App.css */
+
+/* Container chính */
+.container {
+  max-width: 450px;
+  margin: 0 auto;
+  font-family: "Poppins", sans-serif;
+}
+
+/* Tiêu đề */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #444;
+}
+
+/* Form */
+form {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Input */
+form .form-control {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  transition: 0.3s;
+}
+
+form .form-control:focus {
+  border-color: #6c63ff; /* xanh tím nhạt */
+  box-shadow: 0 0 6px rgba(108, 99, 255, 0.3);
+}
+
+/* Nút submit */
+form button {
+  width: 100%;
+  border-radius: 8px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6c63ff, #b993d6);
+  border: none;
+  color: white;
+  padding: 10px;
+  transition: 0.3s;
+}
+
+form button:hover {
+  background: linear-gradient(135deg, #5a54d6, #a070d6);
+  transform: scale(1.02);
+}
+
+/* Toast */
+.toast {
+  margin: 15px auto;
+  text-align: center;
+  border-radius: 10px;
+  font-weight: 500;
+  background: #3fbe25 !important;
+}
+
+.toast .toast-body {
+  color: white;
+  font-size: 14px;
+}
+
+/* Modal */
+.modal-content {
+  border-radius: 12px;
+  border: none;
+}
+
+.modal-title {
+  font-weight: 600;
+  color: #6c63ff;
+  text-align: center;
+}
+
+.card {
+  border-radius: 10px;
+  background: #f8f9ff;
+  border: none;
+}
+
+.card p {
+  color: #333;
+  font-weight: 500;
+}
