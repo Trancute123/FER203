@@ -6,17 +6,20 @@ function ProfileForm({ onSubmit }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [age, setAge] = useState("");
+
   const [showToast, setShowToast] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [validated, setValidated] = useState(false); // ✅ thêm state check submit
 
-  const isValidName = name.trim() !== "";//tên không được rỗng.
-  const isValidEmail = email.includes("@");//email phải chứa ký tự @.
-  const isValidAge = Number(age) >= 1;//tuổi phải ≥ 1.
+  const isValidName = name.trim() !== "";
+  const isValidEmail = /^\S+@\S+\.\S+$/.test(email);
+  const isValidAge = Number(age) >= 1;
 
-  const isFormValid = isValidName && isValidEmail && isValidAge; //chỉ true nếu tất cả đều hợp lệ → dùng để bật/tắt nút Submit.
+  const isFormValid = isValidName && isValidEmail && isValidAge;
 
-  const handleSubmit = (e) => { //hàm sibmit form
-    e.preventDefault();// ngăn reload trang mặc định
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setValidated(true); // ✅ bật check lỗi
     if (isFormValid) {
       setShowToast(true);
       setShowModal(true);
@@ -26,47 +29,52 @@ function ProfileForm({ onSubmit }) {
 
   return (
     <>
-      <Form onSubmit={handleSubmit} className="p-3 border rounded">
+      <Form onSubmit={handleSubmit} className="p-4 border rounded shadow-sm bg-white">
+        {/* Name */}
         <Form.Group className="mb-3">
           <Form.Control
             type="text"
             placeholder="Enter your name"
             value={name}
-            onChange={(e) => setName(e.target.value)}//cập nhật state khi người dùng nhập.
-            isInvalid={!isValidName && name !== ""}//nếu name không hợp lệ thì input đỏ.
+            onChange={(e) => setName(e.target.value)}
+            isInvalid={validated && !isValidName} // ✅ ép lỗi khi submit
           />
-          <Form.Control.Feedback type="invalid" >
-            Name cannot be empty!
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Name cannot be empty!</Form.Control.Feedback>
         </Form.Group>
 
+        {/* Email */}
         <Form.Group className="mb-3">
           <Form.Control
             type="email"
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            isInvalid={!isValidEmail && email !== ""}
+            isInvalid={validated && !isValidEmail}
           />
-          <Form.Control.Feedback type="invalid">
-            Invalid email!
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Invalid email!</Form.Control.Feedback>
         </Form.Group>
 
+        {/* Age */}
         <Form.Group className="mb-3">
           <Form.Control
             type="number"
             placeholder="Enter your age"
             value={age}
             onChange={(e) => setAge(e.target.value)}
-            isInvalid={!isValidAge && age !== ""}
+            isInvalid={validated && !isValidAge}
           />
-          <Form.Control.Feedback type="invalid">
-            Age must be at least 1!
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">Age must be at least 1!</Form.Control.Feedback>
         </Form.Group>
 
-        <Button type="submit" disabled={!isFormValid}>
+        <Button
+          type="submit"
+          disabled={!isFormValid}
+          className="w-100"
+          style={{
+            background: "linear-gradient(to right, #667eea, #764ba2)",
+            border: "none",
+          }}
+        >
           Submit
         </Button>
       </Form>
@@ -80,11 +88,11 @@ function ProfileForm({ onSubmit }) {
         bg="success"
         className="mt-3"
       >
-        <Toast.Body className="text-white">Submitted successfully!</Toast.Body>
+        <Toast.Body className="text-white text-center">Submitted successfully!</Toast.Body>
       </Toast>
 
       {/* Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Submitted Data</Modal.Title>
         </Modal.Header>
