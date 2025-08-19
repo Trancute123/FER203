@@ -1,12 +1,18 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { Navbar, Nav, Form, FormControl, Button, Container } from "react-bootstrap";
 
-function AppNavbar({ onSearch }) {
+function AppNavbar({ onSearch, onOpenProfile }) {
   const [query, setQuery] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (onSearch) onSearch(query.toLowerCase()); // gửi search query lên App
+    if (onSearch) onSearch(query.toLowerCase());
+  };
+
+  const openProfile = (e) => {
+    e.preventDefault();           // không reload trang
+    if (onOpenProfile) onOpenProfile();
   };
 
   return (
@@ -20,43 +26,28 @@ function AppNavbar({ onSearch }) {
       }}
     >
       <Container>
-        {/* Logo + Brand */}
-        <Navbar.Brand
-          href="#"
-          style={{
-            fontWeight: "700",
-            fontSize: "1.5rem",
-            color: "#003366",
-          }}
-        >
-          <img
-            src="/images/studentlogo.jpg"
-            alt="logo"
-            width="50"
-            height="50"
-            className="d-inline-block align-top me-3 rounded-circle"
-            style={{ border: "2px solid white" }}
-          />
+        <Navbar.Brand style={{ fontWeight: 700, fontSize: "1.5rem", color: "#003366" }}>
           Student Management
         </Navbar.Brand>
 
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-
-        <Navbar.Collapse id="basic-navbar-nav">
-          {/* Links */}
+        <Navbar.Toggle />
+        <Navbar.Collapse>
           <Nav className="ms-auto me-4">
-            <Nav.Link href="#" style={{ color: "#003366", fontWeight: "500", fontSize: "1.1rem" }}>
-              Home
-            </Nav.Link>
-            <Nav.Link href="#" style={{ color: "#003366", fontWeight: "500", fontSize: "1.1rem" }}>
-              Students
-            </Nav.Link>
-            <Nav.Link href="#" style={{ color: "#003366", fontWeight: "500", fontSize: "1.1rem" }}>
-              About
+            <Nav.Link href="#" style={{ color: "#003366", fontWeight: 500 }}>Home</Nav.Link>
+            <Nav.Link href="#" style={{ color: "#003366", fontWeight: 500 }}>Students</Nav.Link>
+            <Nav.Link href="#" style={{ color: "#003366", fontWeight: 500 }}>About</Nav.Link>
+
+            {/* NEW: mở modal Build your Profile */}
+            <Nav.Link
+              href="#"
+              onClick={openProfile}
+              style={{ color: "#003366", fontWeight: 600 }}
+              title="Open profile wizard"
+            >
+              Build your Profile
             </Nav.Link>
           </Nav>
 
-          {/* Quick search */}
           <Form className="d-flex" onSubmit={handleSubmit}>
             <FormControl
               type="search"
@@ -64,20 +55,11 @@ function AppNavbar({ onSearch }) {
               className="me-2"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              style={{
-                borderRadius: "20px",
-                border: "1px solid #80bfff",
-                padding: "5px 15px",
-              }}
+              style={{ borderRadius: 20, border: "1px solid #80bfff", padding: "5px 15px" }}
             />
             <Button
               type="submit"
-              style={{
-                borderRadius: "20px",
-                background: "#4da6ff",
-                border: "none",
-                fontWeight: "500",
-              }}
+              style={{ borderRadius: 20, background: "#4da6ff", border: "none" }}
             >
               Search
             </Button>
@@ -87,5 +69,10 @@ function AppNavbar({ onSearch }) {
     </Navbar>
   );
 }
+
+AppNavbar.propTypes = {
+  onSearch: PropTypes.func,
+  onOpenProfile: PropTypes.func, // <-- cần truyền từ App
+};
 
 export default AppNavbar;
