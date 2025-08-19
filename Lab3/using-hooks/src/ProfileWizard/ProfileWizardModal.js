@@ -137,13 +137,12 @@ export default function ProfileWizardModal({ show, onHide }) {
           )}
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="light"
-            onClick={prevStep}
-            disabled={state.step === 0}
-          >
-            Previous
-          </Button>
+          {state.step > 0 && (
+            <Button variant="light" onClick={prevStep}>
+              Previous
+            </Button>
+          )}
+
           {state.step < steps.length - 1 ? (
             <Button onClick={nextStep} disabled={!stepValid}>
               Next
