@@ -33,7 +33,6 @@ function StudentDetailModal({ student, show, onHide }) {
         </Button>
       </Modal.Footer>
 
-      {/* CSS lồng trực tiếp */}
       <style>{`
         .modal-header-custom {
           background: linear-gradient(135deg, #a1c4fd, #c2e9fb);
