@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { students } from "../data/students";
-import Filters from "../components/Filters";
-import SortDropdown from "../components/SortDropdown";
-import StudentGrid from "../components/StudentGrid";
-import StudentDetailModal from "../components/StudentDetailModal";
+import Filters from "../components/students/Filters";
+import SortDropdown from "../components/students/SortDropdown";
+import StudentGrid from "../components/students/StudentGrid";
+import StudentDetailModal from "../components/students/StudentDetailModal";
 
-function StudentsPage({ searchQuery = "" }) {   // ✅ nhận searchQuery từ App
+function StudentsPage({ searchQuery = "" }) {
   const [search, setSearch] = useState(searchQuery);
   const [ageFilter, setAgeFilter] = useState("All Ages");
   const [hasAvatar, setHasAvatar] = useState(false);
@@ -14,16 +14,16 @@ function StudentsPage({ searchQuery = "" }) {   // ✅ nhận searchQuery từ A
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  // ✅ mỗi khi navbar nhập Quick Search → cập nhật vào state search
+  // đồng bộ quick search từ navbar
   useEffect(() => {
     setSearch(searchQuery);
   }, [searchQuery]);
 
-  // ✅ Filter + Sort
+  // Filter + Sort
   const filteredStudents = useMemo(() => {
     let result = [...students];
 
-    // search tất cả (name, email, id, age) ❌ không search avatar
+    // search theo name/email/id/age
     if (search) {
       const q = search.toLowerCase().trim();
       result = result.filter(
@@ -40,7 +40,7 @@ function StudentsPage({ searchQuery = "" }) {   // ✅ nhận searchQuery từ A
     if (ageFilter === "21 – 25") result = result.filter((s) => s.age >= 21 && s.age <= 25);
     if (ageFilter === "> 25") result = result.filter((s) => s.age > 25);
 
-    // filter avatar
+    // filter avatar: tick -> chỉ còn người có avatar; bỏ tick -> hiện tất cả
     if (hasAvatar) {
       result = result.filter((s) => s.avatar && s.avatar.trim() !== "");
     }
@@ -70,7 +70,9 @@ function StudentsPage({ searchQuery = "" }) {   // ✅ nhận searchQuery từ A
         setHasAvatar={setHasAvatar}
       />
       <SortDropdown sortBy={sortBy} setSortBy={setSortBy} />
-      <StudentGrid students={filteredStudents} onView={handleView} showAvatar={hasAvatar} />
+
+      <StudentGrid students={filteredStudents} onView={handleView} />
+
       <StudentDetailModal
         student={selectedStudent}
         show={showModal}
