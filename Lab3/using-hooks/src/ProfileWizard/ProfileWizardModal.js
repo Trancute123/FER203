@@ -22,10 +22,10 @@ import { steps, reducer, initialState } from "./reducer";
 import { validateAbout, validateAccount, validateAddress } from "./validators";
 
 export default function ProfileWizardModal({ show, onHide }) {
-  const [state, dispatch] = useReducer(reducer, initialState); //lưu dữ liệu form và bước hiện tại.
-  const [showErrors, setShowErrors] = useState(false); //bật báo lỗi khi form chưa hợp lệ.
-  const [showSummary, setShowSummary] = useState(false); //bật modal summary khi finish.
-  const [showToast, setShowToast] = useState(false); //bật thông báo "Success" khi finish.
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const [showErrors, setShowErrors] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
     if (!show) {
@@ -80,6 +80,7 @@ export default function ProfileWizardModal({ show, onHide }) {
       setShowErrors(false);
     } else setShowErrors(true);
   };
+
   const onFinish = () => {
     if (!addressOK) return setShowErrors(true);
     setShowSummary(true);
@@ -93,6 +94,7 @@ export default function ProfileWizardModal({ show, onHide }) {
 
   return (
     <>
+      {/* Form Wizard */}
       <Modal show={show} onHide={onHide} size="lg" centered backdrop="static">
         <Modal.Header closeButton style={headerColor}>
           <Modal.Title>BUILD YOUR PROFILE</Modal.Title>
@@ -154,14 +156,74 @@ export default function ProfileWizardModal({ show, onHide }) {
         </Modal.Footer>
       </Modal>
 
-      {/* Summary + Toast giữ nguyên từ code cũ */}
-      <Modal show={showSummary} onHide={() => setShowSummary(false)} centered>
+      {/* Summary Modal */}
+      <Modal
+        show={showSummary}
+        onHide={() => setShowSummary(false)}
+        centered
+        size="md"
+      >
         <Modal.Header closeButton style={headerColor}>
           <Modal.Title>Your Profile</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Card className="border-0 shadow-sm">
-            <Card.Body>Summary here...</Card.Body>
+        <Modal.Body style={{ maxHeight: "70vh", overflowY: "auto" }}>
+          <Card className="border-0 shadow-sm p-3">
+            <div
+              style={{ display: "flex", alignItems: "flex-start", gap: "20px" }}
+            >
+              {/* Avatar nhỏ gọn */}
+              {state.about.avatarUrl && (
+                <img
+                  src={state.about.avatarUrl}
+                  alt="avatar"
+                  style={{
+                    width: "120px",
+                    height: "120px",
+                    borderRadius: "10px",
+                    objectFit: "cover",
+                    border: "2px solid #a1c4fd",
+                  }}
+                />
+              )}
+
+              {/* Thông tin */}
+              <div style={{ flex: 1 }}>
+                <h5 style={{ color: "#003366" }}>About</h5>
+                <p>
+                  <b>Name:</b> {state.about.firstName} {state.about.lastName}
+                </p>
+                <p>
+                  <b>Email:</b> {state.about.email}
+                </p>
+
+                <h5 className="mt-3" style={{ color: "#003366" }}>
+                  Account
+                </h5>
+                <p>
+                  <b>Username:</b> {state.account.username}
+                </p>
+                <p>
+                  <b>Secret question:</b> {state.account.question}
+                </p>
+                <p>
+                  <b>Answer:</b> {state.account.answer}
+                </p>
+
+                <h5 className="mt-3" style={{ color: "#003366" }}>
+                  Address
+                </h5>
+                <p>
+                  <b>Street:</b> {state.address.streetNumber}{" "}
+                  {state.address.streetName}
+                </p>
+                <p>
+                  <b>City:</b> {state.address.city}
+                </p>
+                <p>
+                  <b>Country:</b> {state.address.country}
+                </p>
+              </div>
+            </div>
           </Card>
         </Modal.Body>
         <Modal.Footer>
@@ -176,6 +238,7 @@ export default function ProfileWizardModal({ show, onHide }) {
         </Modal.Footer>
       </Modal>
 
+      {/* Toast */}
       <ToastContainer position="bottom-end" className="p-3">
         <Toast
           bg="success"
