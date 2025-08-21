@@ -1,8 +1,7 @@
 export const steps = ["About", "Account", "Address"];
-
 export const initialState = {
   step: 0,
-  about: { firstName: "", lastName: "", email: "", avatarUrl: "" },
+  about: { firstName: "", lastName: "", email: "", avatarUrl: "", age: "" },
   account: { username: "", password: "", confirm: "", question: "", answer: "" },
   address: { streetName: "", streetNumber: "", city: "", country: "" },
 };
