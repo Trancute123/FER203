@@ -23,7 +23,7 @@ const DishesList = ({ dishes }) => {
                     alt={dish.name}
                     className="dish-card__img"
                   />
-                  <div className="dish-card__price-chip">
+                  <div className="dish-card">
                     <FaDollarSign className="me-1" />
                     {parseFloat(dish.price).toFixed(2)}
                   </div>
