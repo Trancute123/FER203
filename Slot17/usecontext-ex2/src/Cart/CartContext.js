@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
     setCartItems((prevItems) => [...prevItems, dish]);
   };
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
+  // Hàm xóa sản phẩm khỏi giỏ hàng   
   const removeFromCart = (id) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
   };

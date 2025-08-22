@@ -117,7 +117,7 @@ const Cart = () => {
                     variant="success"
                     className="btn-checkout"
                     onClick={openConfirm}
-                    disabled={processing || cartItems.length === 0} // ✅ disable khi trống
+                    disabled={processing || cartItems.length === 0} // disable khi trống
                   >
                     {processing ? (
                       <>
@@ -181,7 +181,7 @@ const Cart = () => {
           bg="success"
           onClose={() => setPaid(false)}
           show={paid}
-          delay={3000}
+          delay={5000}
           autohide
         >
           <Toast.Header closeButton={false}>
