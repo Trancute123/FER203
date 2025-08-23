@@ -10,7 +10,7 @@ import { useFav } from "../context/FavouritesContext";
 export default function Profile() {
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
-  const { cartItems } = useCart();
+  const { cartItems } = useCart();  
   const { favourites } = useFav();
   const navigate = useNavigate();
 

@@ -75,7 +75,7 @@ export default function ProductCard({ p }) {
                   aria-label="Browse favourites"
                 >
                   <FaHeart className="me-1" />
-                  Browse My favs
+                  Unlike
                 </Button>
               ) : (
                 <Button
