@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
   const login = (email) => setUser({ email });
   const logout = () => setUser(null);   // ✅ chỉ cần thế này
-
+  
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       {children}

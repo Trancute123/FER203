@@ -305,28 +305,94 @@ html, body {
   .profile-avatar{ width: 80px; height: 80px; font-size: 26px; }
   .profile-links{ grid-template-columns: 1fr; }
 }
-/* ===== CHECKOUT — Empty state ===== */
+/* ===== CHECKOUT — Empty state polish ===== */
 .empty-state{
+  position: relative;
   text-align: center;
-  padding: 28px 12px 8px;
+  padding: 36px 16px 14px;
+  margin-top: 6px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(46,125,50,.04), rgba(46,125,50,.02));
+  border: 1px dashed rgba(46,125,50,.22);
 }
+
+/* vầng sáng mềm sau emoji */
+.empty-state::before{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 14px;
+  transform: translateX(-50%);
+  width: 170px; height: 170px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(76,175,80,.18), rgba(76,175,80,0) 70%);
+  filter: blur(1px);
+  z-index: 0;
+}
+
 .empty-emoji{
-  font-size: 48px;
+  position: relative;
+  z-index: 1;
+  font-size: 56px;
   line-height: 1;
   margin-bottom: 8px;
+  animation: emptyFloat 3.5s ease-in-out infinite;
 }
+@keyframes emptyFloat {
+  0%,100% { transform: translateY(0); }
+  50%     { transform: translateY(-6px); }
+}
+
 .empty-title{
   font-weight: 900;
   letter-spacing: .2px;
   margin-bottom: 6px;
+  /* chữ cảm ơn màu gradient */
+  background: linear-gradient(90deg, var(--primary), #3ca75a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
+
 .empty-sub{
   color: var(--muted);
-  margin-bottom: 18px;
+  max-width: 640px;
+  margin: 0 auto 18px;
 }
+
+/* actions */
 .empty-actions{
   display: flex;
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
 }
+.empty-actions .btn{
+  height: 44px;
+  font-weight: 800;
+  border-radius: 14px;
+}
+.empty-actions .btn-pay{
+  padding: 12px 18px;
+  box-shadow: 0 8px 18px rgba(46,125,50,.25);
+}
+.empty-actions .btn-pay:active{ transform: translateY(1px); }
+.empty-actions .btn-outline-secondary{ border-width: 2px; }
+
+/* mobile tweaks */
+@media (max-width: 576px){
+  .empty-emoji{ font-size: 44px; }
+  .empty-title{ font-size: 1.125rem; }
+}
+/* Force green CTA */
+.btn.btn-pay{
+  background: var(--primary) !important;  /* xanh lá */
+  border: none !important;
+  color: #fff !important;
+  border-radius: 14px;
+  font-weight: 800;
+  padding: 12px 18px;
+  box-shadow: 0 8px 18px rgba(46,125,50,.25);
+}
+.btn.btn-pay:hover{ filter: brightness(.95); }
+

@@ -27,7 +27,7 @@ export default function Products() {
 
   return (
     <>
-      {/* ✅ Carousel ngay đầu trang Products */}
+      {/* Carousel ngay đầu trang Products */}
       <HeroCarousel items={products} />
 
       <div className="container py-4">

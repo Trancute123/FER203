@@ -1,13 +1,19 @@
 import React, { useState } from "react";
-import { Card, Button, Toast, ToastContainer } from "react-bootstrap"; // ❌ bỏ Badge
+import { Card, Button, Toast, ToastContainer } from "react-bootstrap";
 import { FaCartPlus, FaDollarSign, FaHeart, FaInfoCircle } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useFav } from "../context/FavouritesContext";
+import { useAuth } from "../context/AuthContext";
 
 export default function ProductCard({ p }) {
   const { addToCart } = useCart();
   const { favourites, toggleFav } = useFav();
+  const { user } = useAuth();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const [showToast, setShowToast] = useState(false);
   const inFav = favourites.some((f) => f.id === p.id);
 
@@ -16,13 +22,33 @@ export default function ProductCard({ p }) {
     setShowToast(true);
   };
 
+  const handleFav = () => {
+    if (!user) {
+      // Chưa login → tới /login, giữ from để quay lại đúng trang
+      navigate("/login", {
+        state: { from: location.pathname, intent: { type: "fav", productId: p.id } },
+      });
+      return;
+    }
+    toggleFav(p);
+  };
+
   return (
     <>
       <Card className="h-100 border-0 rounded-4 dish-card">
         <div className="dish-card__img-wrap">
-          <Card.Img variant="top" src={p.image} alt={p.title} className="dish-card__img" />
-          <div className="dish-card__price-chip">
-            <FaDollarSign className="me-1" /> {Number(p.price).toFixed(2)}
+          <Card.Img
+            variant="top"
+            src={p.image}
+            alt={p.title}
+            className="dish-card__img"
+          />
+          <div
+            className="dish-card__price-chip"
+            aria-label={`Price $${Number(p.price).toFixed(2)}`}
+          >
+            <FaDollarSign className="me-1" />
+            {Number(p.price).toFixed(2)}
           </div>
         </div>
 
@@ -32,28 +58,50 @@ export default function ProductCard({ p }) {
 
           <div className="dish-card__actions mt-2">
             <div className="dish-card__btns">
-              <Button as={Link} to={`/products/${p.id}`} className="btn-details">
+              <Button as={Link} to={`/products/${p.id}`} className="btn-details" aria-label="View details">
                 <FaInfoCircle className="me-1" /> Details
               </Button>
 
-              <Button className="btn-add" onClick={handleAdd}>
+              <Button className="btn-add" onClick={handleAdd} aria-label="Add to cart">
                 <FaCartPlus className="me-1" /> Add
               </Button>
 
-              <Button
-                className={`btn-fav ${inFav ? "active" : ""}`}
-                onClick={() => toggleFav(p)}
-              >
-                <FaHeart className="me-1" />
-                {inFav ? "Unilike" : "Like"}
-              </Button>
+              {inFav ? (
+                <Button
+                  className="btn-fav active"
+                  as={Link}
+                  to="/favourites"
+                  aria-pressed="true"
+                  aria-label="Browse favourites"
+                >
+                  <FaHeart className="me-1" />
+                  Browse My favs
+                </Button>
+              ) : (
+                <Button
+                  className="btn-fav"
+                  onClick={handleFav}
+                  aria-pressed="false"
+                  aria-label="Like"
+                >
+                  <FaHeart className="me-1" />
+                  Like
+                </Button>
+              )}
             </div>
           </div>
         </Card.Body>
       </Card>
 
+      {/* Toast Added to cart */}
       <ToastContainer position="bottom-end" className="p-3">
-        <Toast bg="success" onClose={() => setShowToast(false)} show={showToast} delay={3000} autohide>
+        <Toast
+          bg="success"
+          onClose={() => setShowToast(false)}
+          show={showToast}
+          delay={3000}
+          autohide
+        >
           <Toast.Body className="text-white">Added to cart</Toast.Body>
         </Toast>
       </ToastContainer>

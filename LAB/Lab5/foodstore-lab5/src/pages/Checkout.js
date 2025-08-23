@@ -1,6 +1,15 @@
 import React, { useMemo, useState } from "react";
 import {
-  Card, Row, Col, Button, ListGroup, Image, Badge, Toast, ToastContainer, Spinner
+  Card,
+  Row,
+  Col,
+  Button,
+  ListGroup,
+  Image,
+  Badge,
+  Toast,
+  ToastContainer,
+  Spinner,
 } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
@@ -43,16 +52,24 @@ export default function Checkout() {
               {cartItems.length === 0 ? (
                 <div className="empty-state">
                   <div className="empty-emoji">🧺</div>
-                  <h4 className="empty-title">Cảm ơn bạn đã ghé FoodStore!</h4>
+                  <h4 className="empty-title">
+                    Thanks for visiting FoodStore!
+                  </h4>
                   <p className="empty-sub">
-                    Giỏ hàng của bạn đang trống — hãy chọn vài món ngon để thưởng thức nhé.
+                    pick a few tasty items to enjoy.
                   </p>
+
+                  {/* empty actions */}
                   <div className="empty-actions">
-                    <Button as={Link} to="/products" className="btn-pay">
-                      Khám phá sản phẩm
+                    <Button as={Link} to="/products" className="btn btn-pay">
+                      Explore products
                     </Button>
-                    <Button as={Link} to="/favourites" variant="outline-secondary">
-                      Xem yêu thích
+                    <Button
+                      as={Link}
+                      to="/favourites"
+                      variant="outline-secondary"
+                    >
+                      View favourites
                     </Button>
                   </div>
                 </div>
@@ -61,7 +78,10 @@ export default function Checkout() {
                   {/* Danh sách sản phẩm mua */}
                   <ListGroup variant="flush" className="mb-3">
                     {cartItems.map((it, idx) => (
-                      <ListGroup.Item key={`${it.id}-${idx}`} className="co-item">
+                      <ListGroup.Item
+                        key={`${it.id}-${idx}`}
+                        className="co-item"
+                      >
                         <div className="d-flex align-items-center gap-3">
                           <Image
                             src={it.image}
@@ -96,7 +116,11 @@ export default function Checkout() {
 
                   {/* Actions */}
                   <div className="d-flex justify-content-between mt-4">
-                    <Button as={Link} to="/products" variant="outline-secondary">
+                    <Button
+                      as={Link}
+                      to="/products"
+                      variant="outline-secondary"
+                    >
                       Continue shopping
                     </Button>
                     <Button

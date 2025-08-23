@@ -52,7 +52,7 @@ export default function Register() {
     const errs = validate(values);
     if (Object.keys(errs).length > 0) return;
 
-    // ✅ đăng ký xong → đăng nhập bằng username & vào /products
+    //  đăng ký xong → đăng nhập bằng username & vào /products
     login(values.username);
     nav("/products", { replace: true });
   };

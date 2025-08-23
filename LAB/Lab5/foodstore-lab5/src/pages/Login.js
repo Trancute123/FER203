@@ -40,7 +40,7 @@ export default function Login() {
     const errs = validate(values);
     if (Object.keys(errs).length > 0) return;
 
-    // ✅ đăng nhập thành công → dùng username
+    //  đăng nhập thành công → dùng username
     login(values.username);
     nav(loc.state?.from || "/products", { replace: true });
   };

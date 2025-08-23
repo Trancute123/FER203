@@ -1,6 +1,6 @@
 import React from "react";
 import NavbarMenu from "./components/NavbarMenu";
-import AppRoutes from "./routes/routes";
+import AppRoutes from "./routes/AppRoutes";
 import { ThemeProvider } from "./context/ThemeContext";
 import { CartProvider } from "./context/CartContext";
 import { FavouritesProvider } from "./context/FavouritesContext";
