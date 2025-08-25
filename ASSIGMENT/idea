@@ -1,0 +1,17 @@
+ tạo và install thư viện 
+ npx create-react-app food-italia
+ cd food-italia
+ npm i react-router-dom react-bootstrap bootstrap axios prop-types
+cài json 
+npm install -g json-server
+json-server --watch db.json --port 3001
+Thêm script chạy server
+{
+  "scripts": {
+    "server": "json-server --watch db.json --port 3001"
+  }
+}
+npm install axios
+npm install react-bootstrap bootstrap
+npm install react-icons
+npm install react-router-dom react-icons react-bootstrap bootstrap

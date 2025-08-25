@@ -1,0 +1,128 @@
+/* ================= Italian vibe header ================ */
+:root{
+  --it-green:#1b5e20;
+  --it-green-2:#236b28;
+  --it-red:#c1121f;
+  --it-ivory:#fffef8;
+  --it-mint:#eef7f0;
+}
+
+/* Main navbar + dải Ý bên trong header */
+.it-navbar{
+  position: sticky; top: 0; z-index: 1030;
+  overflow: visible !important;                    /* FIX: cho menu xổ ra */
+  background:linear-gradient(135deg,var(--it-green) 0%, var(--it-green-2) 55%, #205f27 100%);
+  border-bottom:1px solid rgba(255,255,255,.15);
+  box-shadow:0 6px 24px rgba(10,36,16,.25);
+}
+.it-navbar::before{
+  content:"";
+  position:absolute; left:0; right:0; top:0; height:4px;
+  background:linear-gradient(90deg,#1b5e20 0 33.33%, #ffffff 33.33% 66.66%, #c1121f 66.66% 100%);
+  z-index:-1;                                      /* FIX: luôn dưới nội dung */
+  pointer-events:none;                              /* không chặn click */
+}
+
+/* Inner rail (tùy chọn) */
+.it-nav-rail{
+  background:linear-gradient(0deg,rgba(255,255,255,.08),rgba(255,255,255,.08));
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:10px;
+  padding:.35rem .6rem;
+}
+
+/* Brand */
+.it-brand{
+  color:var(--it-ivory)!important;
+  font-family:"Marcellus", serif;
+  letter-spacing:.3px;
+}
+.it-brand .logo-icon{ filter: drop-shadow(0 2px 4px rgba(0,0,0,.25)); }
+
+/* Nav links */
+.it-navlinks .nav-link{
+  color:#f3f7f4!important;
+  position:relative;
+  font-weight:500;
+  padding:.5rem .65rem;
+  transition:opacity .18s ease,transform .18s ease;
+}
+.it-navlinks .nav-link:hover{ opacity:.96; transform:translateY(-1px); }
+.it-navlinks .nav-link.active{ color:#ffffff!important; }
+.it-navlinks .nav-link::after{
+  content:"";
+  position:absolute; left:.6rem; right:.6rem; bottom:.35rem; height:2px;
+  background:linear-gradient(90deg,#fff8,#fff);
+  border-radius:2px;
+  transform:scaleX(0); transform-origin:left;
+  transition:transform .22s ease;
+}
+.it-navlinks .nav-link:hover::after,
+.it-navlinks .nav-link.active::after{ transform:scaleX(1); }
+
+/* Badges */
+.it-badge-light{ 
+  --bs-badge-padding-x:.5rem;
+  --bs-badge-padding-y:.22rem;
+  background:#f4f7f5!important; color:#1d1f1e!important; 
+  border:1px solid #e6ece8;
+}
+.it-badge-heart{ background:var(--it-red)!important; }
+
+/* Account / Signin pills */
+.it-account-btn,.it-signin-btn{
+  border-radius:999px;
+  padding:.38rem .75rem;
+  display:inline-flex; align-items:center;
+  border:1px solid rgba(255,255,255,.6)!important;
+  color:#fff!important;
+  background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
+  backdrop-filter:saturate(140%) blur(2px);
+}
+.it-account-btn:hover,.it-signin-btn:hover{ filter:brightness(1.06); }
+
+/* Avatar */
+.it-avatar{
+  width:26px;height:26px;border-radius:50%;
+  object-fit:cover;border:1px solid #e9f2ec;
+}
+
+/* Dropdown menu */
+.it-menu{
+  border-radius:12px; border:1px solid #e9efe9;
+  box-shadow:0 14px 40px rgba(0,0,0,.10);
+}
+
+/* Offcanvas (mobile) */
+.it-offcanvas .offcanvas-header{
+  background:linear-gradient(90deg,rgba(27,94,32,.08),rgba(193,18,31,.06));
+}
+.it-offcanvas .offcanvas-body{ background:var(--it-mint); }
+
+/* Toggler rõ ràng hơn */
+.navbar-dark .navbar-toggler{ border-color:rgba(255,255,255,.55); }
+.navbar-dark .navbar-toggler:focus{ box-shadow:0 0 0 .15rem rgba(255,255,255,.25); }
+
+/* Loại bỏ mọi nền sáng vô tình bên trong navbar */
+.it-navbar .container,
+.it-navbar .navbar-collapse,
+.it-navbar .navbar-nav,
+.it-navbar .offcanvas-header,
+.it-navbar .offcanvas-body{
+  background: transparent !important;
+  box-shadow: none !important;
+  border: 0 !important;
+}
+
+/* Ưu tiên hiển thị dropdown và offcanvas */
+.it-navbar .dropdown-menu{ z-index:2000 !important; }
+.offcanvas{ z-index:1050 !important; }
+
+/* Mobile spacing */
+@media (max-width:991.98px){
+  .it-nav-rail{ border:none; border-radius:0; padding:0; background:transparent; }
+  .it-navlinks .nav-link{ padding:.65rem .25rem; }
+}
+
+/* Small polish */
+.badge{ vertical-align:middle; transform:translateY(-1px); }
