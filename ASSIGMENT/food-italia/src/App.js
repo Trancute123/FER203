@@ -62,7 +62,7 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
 
-              <AppFooter text="© 2025 Recipe Lab" />
+<AppFooter text="© 2025 Recipe Lab" github="https://github.com/<your-username>" />
             </div>
           </ToastProvider>
         </WishlistProvider>

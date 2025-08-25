@@ -4,6 +4,7 @@ import { Container, Button, Spinner } from "react-bootstrap";
 import { useCart } from "../contexts/CartContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useToast } from "../contexts/ToastContext";
+import { getProduct } from "../api";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
@@ -15,13 +16,9 @@ export default function ProductDetailPage() {
   const { show } = useToast();
 
   useEffect(() => {
-    fetch("http://localhost:3001/products") // JSON Server API
-      .then((res) => res.json())
-      .then((data) => {
-        const found = data.find((p) => String(p.id) === id);
-        setProduct(found);
-        setLoading(false);
-      });
+    getProduct(id)
+      .then((found) => setProduct(found))
+      .finally(() => setLoading(false));
   }, [id]);
 
   if (loading)
@@ -42,12 +39,7 @@ export default function ProductDetailPage() {
         <img
           src={product.image}
           alt={product.title}
-          style={{
-            width: "100%",
-            maxWidth: "420px",
-            borderRadius: "12px",
-            objectFit: "cover",
-          }}
+          style={{ width: "100%", maxWidth: "420px", borderRadius: "12px", objectFit: "cover" }}
         />
 
         <div className="flex-grow-1">
@@ -85,11 +77,7 @@ export default function ProductDetailPage() {
               variant={wished ? "outline-danger" : "danger"}
               onClick={() => {
                 toggle(product);
-                show(
-                  wished ? "Removed from wishlist" : "Added to wishlist!",
-                  "info",
-                  2500
-                );
+                show(wished ? "Removed from wishlist" : "Added to wishlist!", "info", 2500);
               }}
             >
               {wished ? "In Wishlist" : "Add to Wishlist"}

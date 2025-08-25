@@ -1,4 +1,4 @@
-export default function AppFooter({ text = "© 2025 Recipe Lab" }) {
+export default function AppFooter({ text = "© 2025 Recipe Lab", github = "https://github.com/your-username" }) {
   return (
     <footer
       className="text-center small text-white"
@@ -9,8 +9,10 @@ export default function AppFooter({ text = "© 2025 Recipe Lab" }) {
         padding: "12px 0",
       }}
     >
-      {text}
+      {text} ·{" "}
+      <a href={github} target="_blank" rel="noreferrer" style={{ color: "#fff", textDecoration: "underline" }}>
+        My GitHub
+      </a>
     </footer>
   );
 }
-//“fixed” thật sự ở đáy

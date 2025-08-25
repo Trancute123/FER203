@@ -1,3 +1,4 @@
+import { useState, useMemo } from "react";
 import { Card, Button, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
@@ -5,7 +6,6 @@ import { useCart } from "../contexts/CartContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import { useToast } from "../contexts/ToastContext";
 import { FaHeart, FaRegHeart, FaCartPlus, FaEye } from "react-icons/fa";
-import "./product-card.css";
 
 export default function ProductCard({ product }) {
   const { user } = useAuth();
@@ -14,8 +14,58 @@ export default function ProductCard({ product }) {
   const { ids, toggle } = useWishlist();
   const { show } = useToast();
 
-  const price = product.salePrice ?? product.price;
+  const [hover, setHover] = useState(false);
   const wished = ids.has(product.id);
+  const price = product.salePrice ?? product.price;
+
+  const sx = useMemo(
+    () => ({
+      card: {
+        borderRadius: 16,
+        overflow: "hidden",
+        boxShadow: hover
+          ? "0 14px 34px rgba(0,0,0,.12)"
+          : "0 6px 22px rgba(0,0,0,.06)",
+        transform: hover ? "translateY(-4px)" : "translateY(0)",
+        transition: "transform .22s ease, box-shadow .22s ease",
+        background: "#fff",
+        border: 0,
+      },
+      ribbon: {
+        position: "absolute",
+        top: 10,
+        left: -6,
+        background: "linear-gradient(90deg, #c62828, #e53935)",
+        color: "#fff",
+        fontSize: ".75rem",
+        padding: "6px 12px 6px 18px",
+        borderTopRightRadius: 999,
+        borderBottomRightRadius: 999,
+        boxShadow: "0 4px 12px rgba(230,57,53,.35)",
+        textTransform: "uppercase",
+        letterSpacing: ".5px",
+        display: "inline-flex",
+        alignItems: "center",
+        zIndex: 2,
+      },
+      thumbWrap: {
+        position: "relative",
+        height: 220,
+        overflow: "hidden",
+        background: "#f6faf7",
+      },
+      img: {
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        transform: hover ? "scale(1.05)" : "scale(1)",
+        transition: "transform .35s ease",
+      },
+      priceOld: { color: "#9aa7a1", textDecoration: "line-through", fontWeight: 500 },
+      priceNow: { color: "#2e7d32", fontWeight: 700 },
+    }),
+    [hover]
+  );
 
   const addCart = () => {
     addToCart(product);
@@ -34,13 +84,16 @@ export default function ProductCard({ product }) {
   };
 
   return (
-    <Card className="product-card h-100 border-0 shadow-sm rounded-4">
-      {(product.tags || []).includes("hot") && (
-        <span className="pc-ribbon">HOT</span>
-      )}
+    <Card
+      className="h-100"
+      style={sx.card}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      {(product.tags || []).includes("hot") && <span style={sx.ribbon}>HOT</span>}
 
-      <div className="pc-thumb">
-        <Card.Img src={product.image} alt={product.title} />
+      <div style={sx.thumbWrap}>
+        <Card.Img src={product.image} alt={product.title} style={sx.img} />
       </div>
 
       <Card.Body className="d-flex flex-column p-3">
@@ -49,18 +102,18 @@ export default function ProductCard({ product }) {
           {product.tags?.includes("sale") && <Badge bg="danger">SALE</Badge>}
         </div>
 
-        <Card.Text className="small text-muted flex-grow-1">
-          {product.description}
-        </Card.Text>
+        <Card.Text className="small text-muted flex-grow-1">{product.description}</Card.Text>
 
-        <div className="pc-price mb-2">
+        <div className="mb-2">
           {product.salePrice ? (
             <>
-              <span className="pc-old me-2">${Number(product.price).toFixed(2)}</span>
-              <span className="pc-now text-danger">${Number(product.salePrice).toFixed(2)}</span>
+              <span className="me-2" style={sx.priceOld}>
+                ${Number(product.price).toFixed(2)}
+              </span>
+              <span className="text-danger fw-bold">${Number(product.salePrice).toFixed(2)}</span>
             </>
           ) : (
-            <span className="pc-now">${Number(price).toFixed(2)}</span>
+            <span style={sx.priceNow}>${Number(price).toFixed(2)}</span>
           )}
         </div>
 
@@ -68,14 +121,15 @@ export default function ProductCard({ product }) {
           <Button variant="success" className="w-50 rounded-3" size="sm" onClick={addCart}>
             <FaCartPlus className="me-1" /> Add
           </Button>
+
           <Button
             variant={wished ? "outline-danger" : "danger"}
             className="w-50 rounded-3"
             size="sm"
-            onClick={addWish}
+            onClick={() => (wished ? nav("/wishlist") : addWish())}
           >
             {wished ? <FaHeart className="me-1" /> : <FaRegHeart className="me-1" />}
-            {wished ? "Wishlist" : "Wish"}
+            {wished ? "View Wishlist" : "Wish"}
           </Button>
         </div>
 

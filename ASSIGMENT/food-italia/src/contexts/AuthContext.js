@@ -14,11 +14,10 @@ export default function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     const acc = await getAccountByEmail(email);
     if (!acc || acc.password !== password) throw new Error("Invalid email or password");
-    setUser({ id: acc.id, name: acc.username || acc.name, email: acc.email });
+    setUser({ id: acc.id, name: acc.username || acc.name, email: acc.email, avatar: acc.avatar, address: acc.address });
   }, []);
 
   const register = useCallback(async (data) => {
-    // data: {name,email,avatar,username,password,secretQuestion,answer}
     const created = await createAccount({
       username: data.username,
       email: data.email,
@@ -27,15 +26,18 @@ export default function AuthProvider({ children }) {
       answer: data.answer,
       name: data.name,
       avatar: data.avatar,
-      wishlist: [],        // để dành cho option lưu wishlist theo account
+      wishlist: [],
+      address: data.address,
     });
-    setUser({ id: created.id, name: created.username || created.name, email: created.email });
+    setUser({ id: created.id, name: created.username || created.name, email: created.email, avatar: created.avatar, address: created.address });
   }, []);
 
   const logout = useCallback(() => setUser(null), []);
 
   const value = useMemo(() => ({
-    user, login, logout, register, redirectAfterLogin, setRedirectAfterLogin
+    user, setUser,                 // ✅ expose setUser
+    login, logout, register,
+    redirectAfterLogin, setRedirectAfterLogin
   }), [user, login, logout, register, redirectAfterLogin]);
 
   return <AuthCtx.Provider value={value}>{children}</AuthCtx.Provider>;

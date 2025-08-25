@@ -1,9 +1,8 @@
-// src/layout/HeroCarousel.js
 import { Container, Carousel } from "react-bootstrap";
 
 export default function HeroCarousel({
   slides,
-  items = [],                                // 👈 data truyền từ App/Home
+  items = [],
   take = 4,
   itemKeys = { src: "image", caption: "title", sub: "description" },
   height = 360,
@@ -28,7 +27,14 @@ export default function HeroCarousel({
 
   const inner = (
     <div className={shadow ? "shadow" : ""} style={{ borderRadius: rounded, overflow: "hidden" }}>
-      <Carousel interval={interval} controls={controls} indicators={indicators} fade={fade} variant="dark">
+      <Carousel
+        interval={interval}
+        controls={controls}
+        indicators={indicators}
+        fade={fade}
+        variant="dark"
+        pause="hover"   // giữ nguyên hành vi yêu cầu
+      >
         {computed.map((s, i) => (
           <Carousel.Item key={i}>
             <img
