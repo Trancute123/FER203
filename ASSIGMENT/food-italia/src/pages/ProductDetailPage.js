@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Container, Button, Spinner } from "react-bootstrap";
 import { useCart } from "../contexts/CartContext";
@@ -8,17 +8,30 @@ import { getProduct } from "../api";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
+  const nav = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
 
   const { addToCart } = useCart();
   const { ids, toggle } = useWishlist();
   const { show } = useToast();
 
   useEffect(() => {
-    getProduct(id)
-      .then((found) => setProduct(found))
-      .finally(() => setLoading(false));
+    let stop = false;
+    async function run() {
+      setLoading(true); setErr("");
+      try {
+        const found = await getProduct(id);
+        if (!stop) setProduct(found || null);
+      } catch (e) {
+        if (!stop) setErr("Product not found");
+      } finally {
+        if (!stop) setLoading(false);
+      }
+    }
+    if (id) run();
+    return () => { stop = true; };
   }, [id]);
 
   if (loading)
@@ -29,9 +42,16 @@ export default function ProductDetailPage() {
       </Container>
     );
 
-  if (!product) return <Container className="py-5">Product not found.</Container>;
+  if (err || !product)
+    return (
+      <Container className="py-5 text-center" style={{maxWidth:720}}>
+        <h5 className="mb-3">{err || "Product not found"}</h5>
+        <Button variant="success" onClick={() => nav("/")}>Back to Home</Button>
+      </Container>
+    );
 
   const wished = ids.has(product.id);
+  const price = product.salePrice ?? product.price;
 
   return (
     <Container className="py-4">
@@ -58,7 +78,7 @@ export default function ProductDetailPage() {
               </>
             ) : (
               <span className="fw-bold text-success">
-                ${Number(product.price).toFixed(2)}
+                ${Number(price).toFixed(2)}
               </span>
             )}
           </div>
@@ -66,22 +86,17 @@ export default function ProductDetailPage() {
           <div className="d-flex gap-3">
             <Button
               variant="success"
-              onClick={() => {
-                addToCart(product);
-                show("Added to cart!", "success", 2500);
-              }}
+              onClick={() => { addToCart(product); show("Added to cart!", "success", 2500); }}
             >
               Add to Cart
             </Button>
             <Button
               variant={wished ? "outline-danger" : "danger"}
-              onClick={() => {
-                toggle(product);
-                show(wished ? "Removed from wishlist" : "Added to wishlist!", "info", 2500);
-              }}
+              onClick={() => { toggle(product); show(wished ? "Removed from wishlist" : "Added to wishlist!", "info", 2500); }}
             >
               {wished ? "In Wishlist" : "Add to Wishlist"}
             </Button>
+           
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ import RegisterPage from "./pages/RegisterPage";
 import WishlistPage from "./pages/WishlistPage";
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
-import ProfilePage from "./pages/ProfilePage";   // 👈 thêm
+import ProfilePage from "./pages/ProfilePage"; // 👈 thêm
 import { FaPizzaSlice } from "react-icons/fa";
 
 import AuthProvider, { useAuth } from "./contexts/AuthContext";
@@ -48,7 +48,9 @@ export default function App() {
       <CartProvider>
         <WishlistProvider>
           <ToastProvider>
-            <div style={{ minHeight: "100vh", paddingBottom: 64, background: BG }}>
+            <div
+              style={{ minHeight: "100vh", paddingBottom: 64, background: BG }}
+            >
               <HeaderWithCounts />
 
               <Routes>
@@ -62,7 +64,10 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>
 
-<AppFooter text="© 2025 Recipe Lab" github="https://github.com/<your-username>" />
+              <AppFooter
+                text="© 2025 Recipe Lab"
+                github="https://github.com/<your-username>"
+              />
             </div>
           </ToastProvider>
         </WishlistProvider>

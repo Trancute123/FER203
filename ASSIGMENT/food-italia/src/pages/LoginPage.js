@@ -41,6 +41,7 @@ export default function LoginPage() {
       setErrs({ form: err.message || "Invalid email or password" });
     }
   };
+  <Form.Text className="text-danger fw-semibold">{errs.form}</Form.Text>;
 
   return (
     <Container className="py-4" style={{ maxWidth: 520 }}>
@@ -71,12 +72,18 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 isInvalid={!!errs.password}
               />
-              {errs.password && <div className="form-error">{errs.password}</div>}
+              {errs.password && (
+                <div className="form-error">{errs.password}</div>
+              )}
             </Form.Group>
 
             <div className="d-flex align-items-center gap-3">
-              <Button type="submit" variant="success">Sign in</Button>
-              <Link to="/register" className="ms-auto">Create an account</Link>
+              <Button type="submit" variant="success">
+                Sign in
+              </Button>
+              <Link to="/register" className="ms-auto">
+                Create an account
+              </Link>
             </div>
           </Form>
         </Card.Body>

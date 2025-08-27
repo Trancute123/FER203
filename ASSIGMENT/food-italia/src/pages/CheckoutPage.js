@@ -1,8 +1,17 @@
 // src/pages/CheckoutPage.jsx
-import { useState, useMemo } from "react";
-import { Container, Card, Button, Alert, Badge } from "react-bootstrap";
+import { useState } from "react";
+import { Container, Card, Table, Button, Badge, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { FaClipboardList, FaShoppingCart, FaDollarSign, FaArrowLeft } from "react-icons/fa";
+import {
+  FaClipboardList,
+  FaShoppingCart,
+  FaDollarSign,
+  FaArrowLeft,
+  FaTrash,
+  FaPlus,
+  FaMinus,
+} from "react-icons/fa";
+
 import { useAuth } from "../contexts/AuthContext";
 import { useCart } from "../contexts/CartContext";
 import { useToast } from "../contexts/ToastContext";
@@ -10,168 +19,317 @@ import { createOrder } from "../api";
 
 export default function CheckoutPage() {
   const { user } = useAuth();
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, incQty, decQty, removeFromCart, clearCart } =
+    useCart();
   const { show } = useToast();
-  const [err, setErr] = useState("");
   const nav = useNavigate();
-
-  // ====== local styles (no external CSS) ======
-  const S = useMemo(
-    () => ({
-      page: {
-        minHeight: "calc(100vh - 120px)",
-        background:
-          "linear-gradient(180deg, #eef7f0 0%, #e9f4ec 100%)",
-        padding: "28px 0 48px",
-      },
-      titleWrap: { display: "flex", alignItems: "center", gap: 10, color: "#17391f", marginBottom: 14 },
-      titleIcon: { fontSize: 24, filter: "drop-shadow(0 1px 2px rgba(0,0,0,.15))" },
-      pill: {
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 6,
-        background: "#f3faf5",
-        color: "#16361d",
-        border: "1px solid #e3eee6",
-        padding: "4px 10px",
-        borderRadius: 999,
-        fontSize: ".9rem",
-      },
-      card: {
-        background: "#fff",
-        border: "1px solid #e8eee9",
-        borderRadius: 16,
-        boxShadow: "0 12px 36px rgba(16,48,24,.12)",
-        overflow: "hidden",
-      },
-      cardHead: {
-        background: "linear-gradient(180deg, rgba(27,94,32,.10), rgba(27,94,32,.03))",
-        borderBottom: "1px solid #e6efe8",
-        padding: "12px 16px",
-        fontWeight: 600,
-      },
-      cardBody: { padding: 18 },
-      btnPrimary: {
-        background: "linear-gradient(180deg,#2d7b35,#256a2d)",
-        color: "#fff",
-        border: "none",
-        borderRadius: 10,
-        fontWeight: 600,
-        padding: "8px 14px",
-        boxShadow: "0 8px 22px rgba(37,106,45,.35)",
-      },
-      btnLight: {
-        background: "#fff",
-        color: "#2b2b2b",
-        border: "1px solid #e5ece8",
-        borderRadius: 10,
-        fontWeight: 600,
-        padding: "8px 14px",
-      },
-      btnGhost: {
-        background: "#fff",
-        color: "#2b2b2b",
-        border: "1px solid #e5ece8",
-        borderRadius: 10,
-        fontWeight: 600,
-        padding: "8px 14px",
-      },
-      emptyBox: {
-        background: "#fff",
-        border: "1px dashed #d7e5da",
-        borderRadius: 16,
-        padding: 26,
-        textAlign: "center",
-        boxShadow: "0 8px 26px rgba(16,48,24,.06)",
-      },
-      emptyIcon: {
-        fontSize: 40,
-        marginBottom: 10,
-        color: "#1b5e20",
-        filter: "drop-shadow(0 2px 6px rgba(27,94,32,.25))",
-      },
-    }),
-    []
-  );
+  const [err, setErr] = useState("");
 
   const placeOrder = async () => {
     setErr("");
     try {
-      if (!user) throw new Error("Please sign in to checkout");
-      if (!items.length) throw new Error("Cart is empty");
+      if (!user) throw new Error("Please sign in to checkout.");
+      if (!items.length) throw new Error("Cart is empty.");
 
-      await createOrder({ userId: user.id, items, total: subtotal });
+      // Lưu order về db.json với field `userid`
+      await createOrder({
+        userid: user.id,
+        items: items.map((it) => it.id), // 👈 chỉ gửi id
+        total: subtotal,
+      });
       clearCart();
       show("Order placed!", "success");
-      nav("/");
+      // Chuyển thẳng qua trang Profile (tab lịch sử)
+      nav("/profile?show=orders");
     } catch (e) {
-      setErr(e.message || "Checkout failed");
+      setErr(e?.message || "Checkout failed");
     }
   };
 
+  const Panel = ({ children }) => (
+    <Card
+      className="border-0"
+      style={{
+        borderRadius: 14,
+        boxShadow: "0 10px 30px rgba(0,0,0,.08)",
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          padding: "12px 16px",
+          borderBottom: "1px solid #e9efe9",
+          background:
+            "linear-gradient(0deg, rgba(27,94,32,.08), rgba(193,18,31,.06))",
+          fontWeight: 600,
+          color: "#143a1f",
+        }}
+      >
+        Order summary
+      </div>
+      <Card.Body style={{ background: "#fff" }}>{children}</Card.Body>
+    </Card>
+  );
+
   return (
-    <div style={S.page}>
-      <Container style={{ maxWidth: 780 }}>
+    <div
+      style={{
+        minHeight: "calc(100vh - 140px)",
+        background: "linear-gradient(180deg,#eef7f0,#e9f4ec)",
+        padding: "28px 0 48px",
+      }}
+    >
+      <Container style={{ maxWidth: 880 }}>
         {/* Title */}
-        <div style={S.titleWrap}>
-          <FaClipboardList style={S.titleIcon} />
-          <h3 style={{ margin: 0 }}>Checkout</h3>
-          <span style={S.pill}>
-            <FaShoppingCart /> Items: {items.length}
+        <h3
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: ".75rem",
+            color: "#17391f",
+            marginBottom: 16,
+          }}
+        >
+          <FaClipboardList />
+          Checkout
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: ".4rem",
+              padding: ".25rem .6rem",
+              borderRadius: 999,
+              background: "#f3faf5",
+              color: "#16361d",
+              border: "1px solid #e3eee6",
+              fontSize: ".95rem",
+            }}
+          >
+            <FaShoppingCart />
+            Items: {items.length}
           </span>
-          <span style={{ ...S.pill, marginLeft: 8 }}>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: ".4rem",
+              padding: ".25rem .6rem",
+              borderRadius: 999,
+              background: "#f3faf5",
+              color: "#16361d",
+              border: "1px solid #e3eee6",
+              fontSize: ".95rem",
+            }}
+          >
             <FaDollarSign /> ${subtotal.toFixed(2)}
           </span>
-        </div>
+        </h3>
 
-        {/* Card */}
-        <Card style={S.card}>
-          <div style={S.cardHead}>Order summary</div>
-          <Card.Body style={S.cardBody}>
-            {err && <Alert variant="danger" className="mb-3">{err}</Alert>}
+        <Panel>
+          {err && (
+            <Alert variant="danger" className="mb-3">
+              {err}
+            </Alert>
+          )}
 
-            {items.length === 0 ? (
-              <div style={S.emptyBox}>
-                <div style={S.emptyIcon}>🧾</div>
-                <div className="lead mb-2">Your cart is empty</div>
-                <div className="text-muted mb-3">
-                  Add some pasta, pizza or tiramisù to checkout.
-                </div>
-                <Button onClick={() => nav("/")} style={S.btnPrimary}>
-                  <FaArrowLeft className="me-2" />
-                  Back to Home
-                </Button>
+          {/* Empty state */}
+          {items.length === 0 ? (
+            <div
+              style={{
+                textAlign: "center",
+                padding: "40px 20px",
+                border: "1px dashed #d7e5da",
+                borderRadius: 12,
+                background: "linear-gradient(180deg,#ffffff,#f8fbf9)",
+              }}
+            >
+              <div style={{ fontSize: 48, opacity: 0.25, marginBottom: 14 }}>
+                🛒
               </div>
-            ) : (
-              <>
-                <div className="d-flex align-items-center justify-content-between mb-2">
-                  <div>
-                    Items{" "}
-                    <Badge bg="light" text="dark">
-                      {items.length}
-                    </Badge>
-                  </div>
-                  <div className="fs-5">
-                    Total: <strong>${subtotal.toFixed(2)}</strong>
-                  </div>
-                </div>
+              <div className="lead mb-2" style={{ fontWeight: 600 }}>
+                Your cart is empty
+              </div>
+              <div className="text-muted mb-4">
+                Add some pasta, pizza or tiramisù to checkout.
+              </div>
+              <Button
+                onClick={() => nav("/")}
+                style={{
+                  backgroundColor: "#2e7d32",
+                  border: "none",
+                  borderRadius: 30,
+                  padding: "10px 22px",
+                  fontWeight: 600,
+                }}
+              >
+                <FaArrowLeft className="me-2" />
+                Back to Home
+              </Button>
+            </div>
+          ) : (
+            <>
+              {/* Items table */}
+              <Table
+                hover
+                responsive
+                className="align-middle mb-3"
+                style={{
+                  border: "1px solid #e6efe8",
+                  borderRadius: 12,
+                  overflow: "hidden",
+                }}
+              >
+                <thead>
+                  <tr
+                    style={{
+                      background: "#f8fbf9",
+                      borderBottom: "1px solid #e6efe8",
+                    }}
+                  >
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th className="text-center">Qty</th>
+                    <th className="text-end">Total</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((it) => (
+                    <tr key={it.id}>
+                      <td className="d-flex align-items-center gap-2">
+                        <img
+                          src={it.image}
+                          alt=""
+                          style={{
+                            height: 48,
+                            width: 48,
+                            objectFit: "cover",
+                            borderRadius: 10,
+                            border: "1px solid #ecf2ee",
+                          }}
+                        />
+                        <span className="fw-semibold">{it.title}</span>
+                      </td>
+                      <td>${Number(it.price).toFixed(2)}</td>
+                      <td className="text-center">
+                        <div className="d-inline-flex align-items-center gap-2">
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 10,
+                              padding: 0,
+                            }}
+                            onClick={() => decQty(it.id)}
+                          >
+                            <FaMinus />
+                          </Button>
+                          <span
+                            className="fw-semibold"
+                            style={{ minWidth: 24, display: "inline-block" }}
+                          >
+                            {it.qty}
+                          </span>
+                          <Button
+                            size="sm"
+                            variant="outline-secondary"
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 10,
+                              padding: 0,
+                            }}
+                            onClick={() => incQty(it.id)}
+                          >
+                            <FaPlus />
+                          </Button>
+                        </div>
+                      </td>
+                      <td className="text-end">
+                        ${(it.qty * it.price).toFixed(2)}
+                      </td>
+                      <td className="text-end">
+                        <Button
+                          size="sm"
+                          variant="outline-danger"
+                          style={{
+                            width: 32,
+                            height: 32,
+                            borderRadius: 10,
+                            padding: 0,
+                          }}
+                          onClick={() => removeFromCart(it.id)}
+                        >
+                          <FaTrash />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
 
-                <div className="d-flex gap-2 mt-3">
-                  <Button style={S.btnPrimary} onClick={placeOrder}>
+              {/* Footer actions */}
+              <div className="d-flex flex-wrap gap-2 justify-content-between align-items-center">
+                <Button
+                  variant="outline-secondary"
+                  onClick={clearCart}
+                  style={{
+                    borderRadius: 12,
+                    border: "1px solid rgba(0,0,0,.08)",
+                    fontWeight: 600,
+                  }}
+                >
+                  <FaTrash className="me-2" />
+                  Clear Cart
+                </Button>
+
+                <div className="ms-auto d-flex align-items-center gap-3">
+                  <div className="fs-5">
+                    Subtotal: <Badge bg="success">${subtotal.toFixed(2)}</Badge>
+                  </div>
+                  <Button
+                    onClick={placeOrder}
+                    style={{
+                      background: "linear-gradient(180deg,#2d7b35,#256a2d)",
+                      border: "none",
+                      borderRadius: 12,
+                      padding: ".55rem .9rem",
+                      fontWeight: 700,
+                      boxShadow: "0 8px 24px rgba(37,106,45,.25)",
+                    }}
+                  >
                     Confirm &amp; Place Order
                   </Button>
-                  <Button style={S.btnLight} onClick={() => nav("/cart")}>
+                  <Button
+                    variant="outline-secondary"
+                    style={{
+                      borderRadius: 12,
+                      border: "1px solid rgba(0,0,0,.08)",
+                      fontWeight: 600,
+                    }}
+                    onClick={() => nav("/cart")}
+                  >
                     Edit Cart
                   </Button>
-                  <Button style={{ ...S.btnGhost, marginLeft: "auto" }} onClick={() => nav("/")}>
+                  <Button
+                    variant="outline-secondary"
+                    style={{
+                      borderRadius: 12,
+                      border: "1px solid rgba(0,0,0,.08)",
+                      fontWeight: 600,
+                    }}
+                    onClick={() => nav("/")}
+                  >
                     <FaArrowLeft className="me-2" />
-                    Continue Shopping
+                    Continue shopping
                   </Button>
                 </div>
-              </>
-            )}
-          </Card.Body>
-        </Card>
+              </div>
+            </>
+          )}
+        </Panel>
       </Container>
     </div>
   );
