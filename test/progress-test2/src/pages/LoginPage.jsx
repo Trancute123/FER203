@@ -15,18 +15,18 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);   // 👈 con mắt
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formErr, setFormErr] = useState("");
   const [fieldErrs, setFieldErrs] = useState({});
 
   function validate() {
     const errs = {};
-    if (!email.trim()) errs.email = "Vui lòng nhập email.";
-    else if (!EMAIL_RE.test(email.trim())) errs.email = "Email không hợp lệ.";
+    if (!email.trim()) errs.email = "Please enter your email.";
+    else if (!EMAIL_RE.test(email.trim())) errs.email = "Invalid email address.";
 
-    if (!password) errs.password = "Vui lòng nhập mật khẩu.";
-    else if (password.length < 6) errs.password = "Mật khẩu tối thiểu 6 ký tự.";
+    if (!password) errs.password = "Please enter your password.";
+    else if (password.length < 6) errs.password = "Password must be at least 6 characters.";
 
     setFieldErrs(errs);
     return Object.keys(errs).length === 0;
@@ -42,14 +42,14 @@ export default function LoginPage() {
       const { data } = await api.get("/accounts", { params: { email, password } });
       const user = Array.isArray(data) ? data[0] : null;
 
-      if (!user) return setFormErr("Email hoặc mật khẩu không đúng.");
-      if (user.isActive === false) return setFormErr("Tài khoản đang bị khóa hoặc chưa kích hoạt.");
+      if (!user) return setFormErr("Incorrect email or password.");
+      if (user.isActive === false) return setFormErr("Your account is locked or not activated.");
 
       localStorage.setItem("auth", JSON.stringify({ email: user.email, isActive: user.isActive }));
       nav(from, { replace: true });
     } catch (err) {
       console.error("Login failed:", err);
-      setFormErr("Không thể đăng nhập. Vui lòng thử lại.");
+      setFormErr("Unable to login. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -65,11 +65,9 @@ export default function LoginPage() {
 
               {formErr && <Alert variant="danger">{formErr}</Alert>}
 
-              {/* TẮT HTML5 validation: noValidate */}
               <Form noValidate onSubmit={onSubmit}>
                 <Form.Group className="mb-3" controlId="loginEmail">
                   <Form.Label>Email</Form.Label>
-                  {/* dùng type="text" để tránh tooltip native của browser */}
                   <Form.Control
                     type="text"
                     value={email}
@@ -86,7 +84,6 @@ export default function LoginPage() {
                 <Form.Group className="mb-3" controlId="loginPassword">
                   <Form.Label>Password</Form.Label>
 
-                  {/* Ô mật khẩu + icon con mắt */}
                   <div className="position-relative">
                     <Form.Control
                       type={showPassword ? "text" : "password"}
@@ -98,7 +95,7 @@ export default function LoginPage() {
                     />
                     <span
                       onClick={() => setShowPassword((v) => !v)}
-                      title={showPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                      title={showPassword ? "Hide password" : "Show password"}
                       style={{
                         position: "absolute",
                         right: 10,
